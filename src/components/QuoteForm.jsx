@@ -78,8 +78,10 @@ export default function QuoteForm() {
     }
   }
 
-  // Google Sheets Web App URL (configured via .env or Vercel Environment Variables)
-  const GOOGLE_SCRIPT_URL = import.meta.env.VITE_GOOGLE_SHEETS_URL || ''
+  // Google Sheets Web App URL
+  const GOOGLE_SCRIPT_URL =
+    import.meta.env.VITE_GOOGLE_SHEETS_URL ||
+    'https://script.google.com/macros/s/AKfycbyaLooE8d2JSYkeCUYY0rsNKsAO8hWkNPye7xmLo-oEmu3JVHsc4Ksjxz76N2-VGpb9/exec'
 
   const handleSubmit = async (e) => {
     e.preventDefault()
