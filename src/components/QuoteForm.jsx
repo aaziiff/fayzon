@@ -78,15 +78,43 @@ export default function QuoteForm() {
     }
   }
 
-  const handleSubmit = (e) => {
+  // Google Sheets Web App URL (configured via .env or Vercel Environment Variables)
+  const GOOGLE_SCRIPT_URL = import.meta.env.VITE_GOOGLE_SHEETS_URL || ''
+
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    if (validate()) {
-      setIsSubmitting(true)
-      // Simulate clean submission delay
-      setTimeout(() => {
-        setIsSubmitting(false)
-        setIsSubmitted(true)
-      }, 600)
+    if (!validate()) return
+
+    setIsSubmitting(true)
+
+    try {
+      if (GOOGLE_SCRIPT_URL) {
+        await fetch(GOOGLE_SCRIPT_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: {
+            'Content-Type': 'text/plain;charset=utf-8'
+          },
+          body: JSON.stringify({
+            fullName: formData.fullName,
+            phone: formData.phone,
+            email: formData.email,
+            serviceRequired: formData.serviceRequired,
+            elevatorType: formData.elevatorType,
+            message: formData.message,
+            submittedAt: new Date().toLocaleString()
+          })
+        })
+      } else {
+        // Simulated delay when URL is not configured yet
+        await new Promise((resolve) => setTimeout(resolve, 600))
+      }
+      setIsSubmitted(true)
+    } catch (err) {
+      console.error('Submission error:', err)
+      setIsSubmitted(true)
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
